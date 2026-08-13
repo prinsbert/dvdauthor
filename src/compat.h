@@ -65,6 +65,16 @@ typedef bool _Bool;
 #include <io.h>
 #endif
 
+#if (defined(_WIN32) || defined(__WIN32__) || defined(__MINGW32__)) && !defined(__CYGWIN__)
+# include <direct.h>
+# undef mkdir
+# define mkdir(path, mode) _mkdir(path)
+# undef rmdir
+# define rmdir(path) _rmdir(path)
+# undef fsync
+# define fsync(fd) _commit(fd)
+#endif
+
 #ifdef HAVE_ICONV
 #include <iconv.h>
 #endif

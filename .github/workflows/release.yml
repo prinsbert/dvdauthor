@@ -88,7 +88,7 @@ jobs:
         run: |
           set -eux
           cd release
-          sha256sum ./dvdauthor-* > checksums.txt
+#          sha256sum ./dvdauthor-* > checksums.txt
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -203,7 +203,7 @@ jobs:
         run: |
           set -eux
           cd release
-          shasum -a 256 dvdauthor-${{ matrix.name }}.tar.gz > checksums.txt
+#          shasum -a 256 dvdauthor-${{ matrix.name }}.tar.gz > checksums.txt
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -262,18 +262,26 @@ jobs:
         run: |
           set -eux
           ./bootstrap
+
+
           WANT_AUTOCONF=2.72 WANT_AUTOMAKE=1.16 autoreconf -fiv
-          ./configure --prefix="$PWD/_install"
+          ./configure --prefix="$PWD/_install" LIBS="-lws2_32"
+          
           CPU_COUNT="$(nproc 2>/dev/null || echo 2)"
-          make -j"$CPU_COUNT"
-          make install-strip
+          # Windows: skip doc build (SGML DocBook toolchain unavailable via MSYS2)
+          # Documentation will be added from Linux build below
+          make -j"$CPU_COUNT" -C src
+          make install-strip -C src
+
           # Bundle MinGW runtime DLLs required by the installed executables.
           mkdir -p _install/bin
-          for dll in \
-            /mingw64/bin/libgcc_s_seh-1.dll \
-            /mingw64/bin/libstdc++-6.dll \
-            /mingw64/bin/libwinpthread-1.dll; do
-            cp "$dll" _install/bin/
+          for exe in _install/bin/*.exe; do
+            # Normalize backslashes to forward slashes and match any MSYS2 toolchain bin directory
+            ldd "$exe" | tr '\\' '/' | (grep -iE '/(mingw64|ucrt64|clang64|msys64)/bin/' || true) | awk '{print $3}' | while read -r dll; do
+              if [ -f "$dll" ]; then
+                cp -u "$dll" _install/bin/
+              fi
+            done
           done
 
           mkdir -p release
@@ -329,7 +337,7 @@ jobs:
         run: |
           set -eux
           cd release
-          sha256sum ./dvdauthor-* > checksums.txt
+#          sha256sum ./dvdauthor-* > checksums.txt
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

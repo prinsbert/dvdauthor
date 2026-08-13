@@ -33,7 +33,11 @@
 #include <errno.h>
 #include <fcntl.h>
 
+#ifdef _WIN32
+#include <winsock2.h>
+#else
 #include <netinet/in.h>
+#endif
 
 #include "common.h"
 #include "conffile.h"
@@ -684,7 +688,7 @@ static void muxnext(bool eoinput)
                     for (i = 0; i < cursti->numbuttons; i++)
                       {
                         const button * const b = &cursti->buttons[i];
-                        char nm1[10], nm2[10];
+                        char nm1[12], nm2[12];
                         wdstr(b->name);
                         wdshort(0);
                         wdbyte(b->autoaction ? 1 : 0);

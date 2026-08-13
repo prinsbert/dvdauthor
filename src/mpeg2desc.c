@@ -28,13 +28,24 @@
 #include <setjmp.h>
 #include <assert.h>
 #include <errno.h>
-#include <fcntl.h>
-
+#include <fcntl.h>        /* O_NONBLOCK, O_CREAT, O_WRONLY, etc. */
+#ifndef O_NONBLOCK
+#define O_NONBLOCK 0
+#endif
 // this is needed for FreeBSD and Windows
 #include <sys/time.h>
+#ifndef FD_SET
+
+/* fd_set, FD_SET, FD_CLR, FD_ZERO, FD_ISSET, select() */
+#ifdef _WIN32
+#include <winsock2.h>
+#else
+#include <sys/select.h>
+#endif
+
+#endif
 
 #include "common.h"
-
 // #define SHOWDATA
 
 static unsigned int
@@ -347,7 +358,8 @@ static void writetostream(int stream, unsigned char *buf, int len)
         queuedlen += thislen;
       } /*while*/
   } /*writetostream*/
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winfinite-recursion"
 static void process_packets
   (
     void (*readinput)(void *ptr, int len, bool required),
@@ -398,7 +410,7 @@ static void process_packets
                     "%08x: sequence hdr: %dx%d, a/f:%02x, bitrate=%d\n",
                     disppos,
                     buf[0] << 4 | buf[1] >> 4,
-                    buf[1] << 8 & 0xf00 | buf[2],
+                    (buf[1] << 8 & 0xf00) | buf[2],
                     buf[3],
                     buf[4] << 10 | buf[5] << 2 | buf[6] >> 6
                   );
@@ -556,9 +568,9 @@ static void process_packets
                 ||
                     hdrid == 0x100 + MPID_PRIVATE2
                 ||
-                    hdrid >= 0x100 + MPID_AUDIO_FIRST && hdrid <= 0x100 + MPID_AUDIO_LAST
+                    (hdrid >= 0x100 + MPID_AUDIO_FIRST) && (hdrid <= 0x100 + MPID_AUDIO_LAST)
                 ||
-                    hdrid >= 0x100 + MPID_VIDEO_FIRST && hdrid <= 0x100 + MPID_VIDEO_LAST
+                    (hdrid >= 0x100 + MPID_VIDEO_FIRST) && (hdrid <= 0x100 + MPID_VIDEO_LAST)
                 )
           )
           {
@@ -896,7 +908,7 @@ static void process_packets
           } /*if*/
       } /*while*/
   } /*process_packets*/
-
+#pragma GCC diagnostic pop
 int main(int argc,char **argv)
   {
     bool skiptohdr = false;
