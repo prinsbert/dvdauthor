@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install dependencies
         shell: bash
@@ -60,7 +60,7 @@ jobs:
 
       - name: Upload shared documentation
         if: matrix.name == 'linux-x86_64'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: shared-docs
           path: _install/share
@@ -94,7 +94,7 @@ jobs:
 #          sha256sum ./dvdauthor-* > checksums.txt
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.name }}-artifacts
           path: release/*
@@ -119,7 +119,7 @@ jobs:
 
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install dependencies
         shell: bash
@@ -152,7 +152,7 @@ jobs:
           tar -C "$PWD/_install" -czf "release/${{ matrix.asset }}" .
 
       - name: Download shared documentation
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: shared-docs
           path: shared-docs-tmp
@@ -209,7 +209,7 @@ jobs:
 #          shasum -a 256 dvdauthor-${{ matrix.name }}.tar.gz > checksums.txt
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.name }}-artifacts
           path: release/*
@@ -233,12 +233,12 @@ jobs:
         run: git config --global core.autocrlf false
 
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup MSYS2
         uses: msys2/setup-msys2@v2
         with:
-          msystem: MINGW64
+          msystem: UCRT64
           update: true
           install: >-
             base-devel
@@ -248,15 +248,15 @@ jobs:
             libtool
             gettext
             gettext-devel
-            mingw-w64-x86_64-toolchain
-            mingw-w64-x86_64-gettext
-            mingw-w64-x86_64-pkgconf
-            mingw-w64-x86_64-libdvdread
-            mingw-w64-x86_64-libpng
-            mingw-w64-x86_64-libxml2
-            mingw-w64-x86_64-fontconfig
-            mingw-w64-x86_64-freetype
-            mingw-w64-x86_64-fribidi
+            mingw-w64-ucrt-x86_64-toolchain
+            mingw-w64-ucrt-x86_64-gettext
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-libdvdread
+            mingw-w64-ucrt-x86_64-libpng
+            mingw-w64-ucrt-x86_64-libxml2
+            mingw-w64-ucrt-x86_64-fontconfig
+            mingw-w64-ucrt-x86_64-freetype
+            mingw-w64-ucrt-x86_64-fribidi
             zip
             unzip
 
@@ -293,7 +293,7 @@ jobs:
           cd ..
 
       - name: Download shared documentation
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: shared-docs
           path: shared-docs-tmp
@@ -343,7 +343,7 @@ jobs:
 #          sha256sum ./dvdauthor-* > checksums.txt
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.name }}-artifacts
           path: release/*
@@ -355,7 +355,7 @@ jobs:
     
     steps:
       - name: Download shared documentation
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: shared-docs
           path: shared-docs-tmp
@@ -439,7 +439,7 @@ jobs:
           EOF
 
       - name: Upload documentation artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: html-docs
           path: docs/html
@@ -454,7 +454,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Download HTML documentation
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: html-docs
           path: docs-html
@@ -478,10 +478,10 @@ jobs:
 
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Download all build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: all-artifacts
 

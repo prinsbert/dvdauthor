@@ -28,14 +28,14 @@ make install
 You can build dvdauthor on Windows using MSYS2, which provides a Unix-like environment with MinGW toolchain:
 
 1. Install [MSYS2](https://www.msys2.org/) if you haven't already
-2. Open MSYS2 MINGW64 terminal
+2. Open MSYS2 UCRT64 terminal
 3. Install build dependencies:
 
 ```bash
 pacman -S base-devel autoconf autoconf2.72 automake libtool gettext gettext-devel \
-  mingw-w64-x86_64-toolchain mingw-w64-x86_64-gettext mingw-w64-x86_64-pkgconf \
-  mingw-w64-x86_64-libdvdread mingw-w64-x86_64-libpng mingw-w64-x86_64-libxml2 \
-  mingw-w64-x86_64-fontconfig mingw-w64-x86_64-freetype mingw-w64-x86_64-fribidi
+  mingw-w64-ucrt-x86_64-toolchain mingw-w64-ucrt-x86_64-gettext mingw-w64-ucrt-x86_64-pkgconf \
+  mingw-w64-ucrt-x86_64-libdvdread mingw-w64-ucrt-x86_64-libpng mingw-w64-ucrt-x86_64-libxml2 \
+  mingw-w64-ucrt-x86_64-fontconfig mingw-w64-ucrt-x86_64-freetype mingw-w64-ucrt-x86_64-fribidi
 ```
 
 4. Build dvdauthor:
@@ -43,7 +43,7 @@ pacman -S base-devel autoconf autoconf2.72 automake libtool gettext gettext-deve
 ```bash
 ./bootstrap
 WANT_AUTOCONF=2.72 WANT_AUTOMAKE=1.16 autoreconf -fiv
-./configure --prefix=/mingw64/local
+./configure --prefix=/ucrt64/local
 make
 make install
 ```
