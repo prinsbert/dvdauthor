@@ -58,7 +58,11 @@ MISSING_TOOLS=()
 
 for tool in "${REQUIRED_TOOLS[@]}"; do
     if ! command -v "$tool" &> /dev/null; then
-        MISSING_TOOLS+=("$tool")
+        if [ "$tool" = "libtoolize" ] && command -v glibtoolize &> /dev/null; then
+            log_info "glibtoolize found"
+        else
+            MISSING_TOOLS+=("$tool")
+        fi
     else
         log_info "$tool found"
     fi

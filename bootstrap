@@ -33,6 +33,10 @@ if [ ! -f autotools/config.rpath ]; then
     echo "error: could not find config.rpath; install gettext" >&2
     exit 1
 fi
+if [ -z "${LIBTOOLIZE:-}" ] && ! command -v libtoolize > /dev/null 2>&1 && command -v glibtoolize > /dev/null 2>&1; then
+    LIBTOOLIZE=glibtoolize
+    export LIBTOOLIZE
+fi
 autoreconf -fi
 
 # Autotools generated scripts must use LF line endings. On Windows checkouts, Git may convert them to CRLF and bash then chokes on command substitutions such as `as_ac_Header=...` in configure. Strip carriage returns in place while preserving the executable bit for scripts like configure.

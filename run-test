@@ -29,7 +29,9 @@ HAS_LIBTOOLIZE=false
 
 command -v flex > /dev/null 2>&1 && HAS_FLEX=true
 command -v bison > /dev/null 2>&1 && HAS_BISON=true  
-command -v libtoolize > /dev/null 2>&1 && HAS_LIBTOOLIZE=true
+if command -v libtoolize > /dev/null 2>&1 || command -v glibtoolize > /dev/null 2>&1; then
+    HAS_LIBTOOLIZE=true
+fi
 
 if [ "$HAS_FLEX" = true ] && [ "$HAS_BISON" = true ] && [ "$HAS_LIBTOOLIZE" = true ]; then
     echo "✓ Full build environment available"
